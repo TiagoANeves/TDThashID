@@ -4,7 +4,7 @@ Hash identifier
 
 ## Usage
 ``` sh
-python TDThashID --hash HASH 
+python TDThashID.py --hash HASH 
 ```
 ![Print](/images/Print.png)
 
