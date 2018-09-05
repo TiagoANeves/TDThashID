@@ -8,6 +8,8 @@
 #Import necessary modules
 import os
 import re
+import json
+import requests
 import sys
 from argparse import ArgumentParser
 
@@ -77,15 +79,20 @@ if __name__ == "__main__":
         print bcolors.WARNING + "Use "+sys.argv[0]+" -h or --help to print the help option\n" + bcolors.ENDC
         sys.exit()
     else:
-        print bcolors.HEADER + "\nStarting the program...\n" + bcolors.ENDC
+        print bcolors.HEADER + "\nStarting the program..." + bcolors.ENDC
+        print bcolors.HEADER + "\nChecking the hash: %s%s%s\n" %(bcolors.OKGREEN,args.hash,bcolors.ENDC)
 	try:
             results = hash_id(args.hash)
             results_len = len(results)
-            #print results_len
             if results_len >= 0:
                 print bcolors.WARNING + "Possible hashs Algorithms:" + bcolors.ENDC
                 for result in results:
                     print "%s[+] %s%s%s\n" %(bcolors.OKGREEN,bcolors.OKBLUE,result,bcolors.ENDC)
+
+                decrypt = requests.get('https://lea.kz/api/hash/'+args.hash)
+                if decrypt.status_code == 200:
+                    decryptcontent = json.loads(decrypt.content)
+                    print "%sThis hash was leaked! The plain password is %s%s%s \n" %(bcolors.WARNING,bcolors.OKGREEN,decryptcontent['password'],bcolors.ENDC)
             else:
 	        print bcolors.FAIL + "The hash could not be identified...\n" + bcolors.ENDC
         except:
